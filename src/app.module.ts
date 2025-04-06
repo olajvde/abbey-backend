@@ -8,6 +8,7 @@ import { ErrorInterceptor } from './middleware/errorHandler';
 import { AuthGuard } from './middleware/auth.guard';
 import { AccountsService } from './services/accounts.service';
 import { AuthService } from './services/auth.service';
+import { AccountsController } from './controllers/accounts.controller';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { AuthService } from './services/auth.service';
       signOptions: { expiresIn: process.env.APP_SECRET_EXPIRES_IN },
     }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AccountsController],
   providers: [
     PrismaService,
     AccountsService,

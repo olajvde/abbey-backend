@@ -59,11 +59,7 @@ export const LoginSchema = Joi.object({
 });
 
 export const createAccountSchema = Joi.object({
-  customerId: Joi.string().required().messages({
-    'string.base': 'Customer ID should be a type of text',
-    'string.empty': 'Customer ID cannot be an empty field',
-    'any.required': 'Customer ID is a required field',
-  }),
+
   officerId: Joi.string().required().messages({
     'string.base': 'Officer ID should be a type of text',
     'string.empty': 'Officer ID cannot be an empty field',
@@ -77,3 +73,4 @@ export const createAccountSchema = Joi.object({
       'any.only': 'Account type must be either savings or current or corporate',
     }),
 });
+

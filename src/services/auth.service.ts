@@ -57,6 +57,9 @@ export class AuthService {
           mode: 'insensitive',
         },
       },
+      include:{
+        customerAccounts:true,
+      }
     });
   }
 
@@ -96,6 +99,9 @@ export class AuthService {
       where: {
         id,
       },
+      include:{
+        customerAccounts:true,
+      }
     });
   }
 
@@ -171,6 +177,13 @@ export class AuthService {
       }; // Invalid token payload
     }
   }
+
+  async isNotAdmin(email: string) {
+    const initiatingUser = await this.findUserByEmail(email);
+
+    return initiatingUser
+  }
+
 
   async tokenGenerator(email: string, userId: string) {
     let payload = { email, userId };
