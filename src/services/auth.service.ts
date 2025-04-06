@@ -105,6 +105,17 @@ export class AuthService {
     });
   }
 
+  async logout(userId: string) {
+    // Delete the refresh token from the database
+    const deletedToken = await this.db.userTokens.deleteMany({
+      where: {
+        userId,
+      },
+    });
+
+    return deletedToken;
+  }
+
   async validateRefreshToken(refreshToken: string): Promise<tokenValidity> {
     try {
       // Verify and decode the refresh token

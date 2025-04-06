@@ -73,6 +73,26 @@ export class AccountsController {
     );
   }
 
+
+  @UseGuards(AuthGuard)
+  @Get('fetch-accounts')
+  @HttpCode(200)
+  async fetchAccounts(@Request() req) {
+    const user = await this.authService.findUserByEmail(req.user.email);
+
+    const accounts = await this.accountsService.fetchAllAccountsBelongingToCustomer(user.id);
+
+    accounts.forEach((account) => {
+      account.customerId = undefined;
+      account.officerId = undefined;
+    });
+    return this.customResponse(
+      200, 
+      'Accounts fetched successfully',
+      accounts,
+    );
+  }
+
   private customResponse(
     statusCode: number,
     statusMessage: string,

@@ -95,10 +95,20 @@ export class AuthController {
       refresh_token,
     });
   }
+  @Post('logout')
+  @HttpCode(200)
 
+  async logout( @Req() request) {
 
-
-
+    const user = await this.authService.findUserByEmail(request.user.email);
+    if (!user) {
+      return this.throwBadRequest('User not found');
+    }
+  
+    await this.authService.logout(user.id);
+   
+    return this.customResponse(200, 'Logout successful')
+  }
 
 
   private customResponse(
