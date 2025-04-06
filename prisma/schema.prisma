@@ -40,6 +40,17 @@ model Accounts {
   createdAt     DateTime @default(now())
 }
 
+model UserTokens {
+  id          String    @id @unique @default(uuid())
+  userId      String
+  token       String
+  expiresAt   DateTime
+  createdAt   DateTime? @default(now()) @map("createdat")
+  logdate     DateTime  @default(dbgenerated("(CURRENT_DATE AT TIME ZONE 'UTC'::text)")) @map("log_date")
+  logdatetime DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+}
+
 enum Statuses {
   pending
   active

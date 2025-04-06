@@ -45,3 +45,35 @@ export const OnboardUserSchema = Joi.object({
     'any.required': 'isAccountOfficer is a required field',
   }),
 });
+export const LoginSchema = Joi.object({
+  email: Joi.string().required().email().messages({
+    'string.base': 'Email should be a type of text',
+    'string.empty': 'Email cannot be an empty field',
+    'string.email': 'Email must be a valid email address',
+    'any.required': 'Email is a required field',
+  }),
+
+  password: Joi.string()
+
+    .required(),
+});
+
+export const createAccountSchema = Joi.object({
+  customerId: Joi.string().required().messages({
+    'string.base': 'Customer ID should be a type of text',
+    'string.empty': 'Customer ID cannot be an empty field',
+    'any.required': 'Customer ID is a required field',
+  }),
+  officerId: Joi.string().required().messages({
+    'string.base': 'Officer ID should be a type of text',
+    'string.empty': 'Officer ID cannot be an empty field',
+    'any.required': 'Officer ID is a required field',
+  }),
+  accountType: Joi.string()
+    .valid('savings', 'current', 'corporate')
+    .default('savings')
+    .messages({
+      'string.base': 'Account type should be a type of text',
+      'any.only': 'Account type must be either savings or current or corporate',
+    }),
+});

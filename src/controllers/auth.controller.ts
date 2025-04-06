@@ -10,7 +10,10 @@ import {
 import { RegisterDto } from './DTOs/auth.dto';
 import { Request as ExpressRequest, Response } from 'express';
 import { JoiValidationPipe } from 'src/middleware/InputValidator';
-import { OnboardUserSchema } from 'src/utils/inputValidationSchema';
+import {
+  LoginSchema,
+  OnboardUserSchema,
+} from 'src/utils/inputValidationSchema';
 import { AuthService } from 'src/services/auth.service';
 import { AccountsService } from 'src/services/accounts.service';
 
@@ -41,7 +44,7 @@ export class AuthController {
     }
 
     // Create user
-    const user = await this.authService.createUser(
+    await this.authService.createUser(
       firstName,
       lastName,
       email,
@@ -52,6 +55,51 @@ export class AuthController {
 
     return this.customResponse(200, 'User created successfully');
   }
+
+  @Post('login')
+  @HttpCode(200)
+  @UsePipes(new JoiValidationPipe(LoginSchema))
+  async login(@Body() loginDto: RegisterDto, @Req() request: ExpressRequest) {
+    let { email, password } = loginDto;
+
+    // Check if user exists
+    const existingUser = await this.authService.findUserByEmail(email);
+    if (!existingUser) {
+      return this.throwBadRequest('Invalid email or password');
+    }
+
+    // Check if password is correct
+    const isPasswordValid = await this.authService.comparePassword(
+      password,
+      existingUser.password,
+    );
+    if (!isPasswordValid) {
+      return this.throwBadRequest('Invalid email or password');
+    }
+
+    // // Generate JWT token
+    //* Generate JWT token
+    const { access_token, refresh_token } =
+      await this.authService.tokenGenerator(
+        existingUser.email,
+        existingUser.id,
+      );
+
+    await this.authService.saveRefreshToken(existingUser.id, refresh_token);
+
+    existingUser.password = undefined; // Remove password from user object
+    existingUser.id = undefined; // Remove id from user object
+    return this.customResponse(200, 'Login successful', {
+      user: existingUser,
+      access_token,
+      refresh_token,
+    });
+  }
+
+
+
+
+
 
   private customResponse(
     statusCode: number,

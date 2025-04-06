@@ -29,6 +29,7 @@
     "@nestjs/throttler": "^6.3.0",
     "@prisma/client": "^6.5.0",
     "bcrypt": "^5.1.1",
+    "date-fns": "^4.1.0",
     "helmet": "^8.1.0",
     "joi": "^17.13.3",
     "nestjs-joi": "^1.10.1",

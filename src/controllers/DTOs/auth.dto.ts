@@ -6,3 +6,8 @@ export class RegisterDto {
   password: string;
   isAccountOfficer: boolean;
 }
+
+export class LoginDto {
+  email: string;
+  password: string;
+}
