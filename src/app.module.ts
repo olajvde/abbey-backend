@@ -6,6 +6,7 @@ import { AuthController } from './controllers/auth.controller';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ErrorInterceptor } from './middleware/errorHandler';
 import { AuthGuard } from './middleware/auth.guard';
+import { AccountsService } from './services/accounts.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthGuard } from './middleware/auth.guard';
   controllers: [AuthController],
   providers: [
     PrismaService,
+    AccountsService,
     AuthGuard,
     {
       provide: APP_INTERCEPTOR,
