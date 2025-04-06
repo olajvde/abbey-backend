@@ -32,6 +32,7 @@ model Accounts {
   accountNumber String   @unique
   customerId    String
   officerId     String
+  accountType   accountType
   customer      Users    @relation("CustomerAccounts", fields: [customerId], references: [id])
   customerName  String
   officerName   String
@@ -46,6 +47,12 @@ enum Statuses {
   deleted
   banned
   deactivated
+}
+
+enum accountType {
+  savings
+  current
+  corporate
 }
 
 enum userType {

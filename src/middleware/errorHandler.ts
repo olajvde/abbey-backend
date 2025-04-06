@@ -19,7 +19,7 @@ export class ErrorInterceptor implements NestInterceptor {
 
         throw new HttpException(
           {
-            statusCode: '96',
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
             statusMessage: 'Something Went Wrong',
             data: error.message,
           },

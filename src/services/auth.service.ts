@@ -16,16 +16,37 @@ export class AuthService {
     email: string,
     password: string,
     phone: string,
+    isAccountOfficer: boolean = false,
   ) {
-    // const user = await this.db.user.create({
-    //   data: {
-    //     firstName,
-    //     lastName,
-    //     email,
-    //     password,
-    //   },
-    // });
-    // return user;
+    let hashedPassword = await this.hashPassword(password);
+    if (isAccountOfficer) {
+      return this.db.users.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+          phone,
+          userType: 'account_officer',
+        },
+      });
+    }
+
+    return this.db.users.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        phone,
+      },
+    });
+  }
+
+  async findUserByEmail(email: string) {
+    return this.db.users.findUnique({
+      where: { email },
+    });
   }
 
   async hashPassword(
@@ -33,5 +54,12 @@ export class AuthService {
     saltRounds: number = 10,
   ): Promise<string> {
     return bcrypt.hash(password, saltRounds);
+  }
+
+  async comparePassword(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(password, hashedPassword);
   }
 }
