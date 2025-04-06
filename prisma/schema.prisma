@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id               String     @id @unique @default(uuid())
+  firstName        String
+  lastName         String
+  email            String     @unique
+  phone            String
+  password         String
+  userType         userType   @default(customer)
+  status           Statuses   @default(active)
+  createdAt        DateTime?  @default(now()) @map("createdat")
+  updatedAt        DateTime?  @updatedAt @map("updatedat")
+  customerAccounts Accounts[] @relation("CustomerAccounts")
+}
+
+model Accounts {
+  id            String   @id @default(uuid())
+  accountNumber String   @unique
+  customerId    String
+  officerId     String
+  customer      Users    @relation("CustomerAccounts", fields: [customerId], references: [id])
+  customerName  String
+  officerName   String
+  balance       Decimal  @default(0.00)
+  createdAt     DateTime @default(now())
+}
+
+enum Statuses {
+  pending
+  active
+  suspended
+  deleted
+  banned
+  deactivated
+}
+
+enum userType {
+  customer
+  account_officer
+}
