@@ -5,6 +5,7 @@ import {
   HttpException,
   Post,
   Req,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { RegisterDto } from './DTOs/auth.dto';
@@ -16,6 +17,7 @@ import {
 } from 'src/utils/inputValidationSchema';
 import { AuthService } from 'src/services/auth.service';
 import { AccountsService } from 'src/services/accounts.service';
+import { AuthGuard } from 'src/middleware/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -95,21 +97,20 @@ export class AuthController {
       refresh_token,
     });
   }
+
+  @UseGuards(AuthGuard)
   @Post('logout')
   @HttpCode(200)
-
-  async logout( @Req() request) {
-
+  async logout(@Req() request) {
     const user = await this.authService.findUserByEmail(request.user.email);
     if (!user) {
       return this.throwBadRequest('User not found');
     }
-  
-    await this.authService.logout(user.id);
-   
-    return this.customResponse(200, 'Logout successful')
-  }
 
+    await this.authService.logout(user.id);
+
+    return this.customResponse(200, 'Logout successful');
+  }
 
   private customResponse(
     statusCode: number,
